@@ -22,7 +22,7 @@ description: >- # used by seo meta and the atom feed
   in this blog, I will share my cybersecurity knowledge and my own notes and ctf write-ups.
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
-url: "http://1dh4m.me/"
+url: "https://1dh4m.me"
 
 github:
   username: el-mehdi-dridi # change to your GitHub username
