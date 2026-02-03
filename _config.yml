@@ -16,7 +16,7 @@ timezone: Africa/Tunis
 
 title: "1dH4m bl0g" # the main title
 
-tagline: "ICT Student | CRTP | CCNA | Active Directory Pentester | Android Pentester | Red Teaming Professional | 1DH4M - no!dea" # it will display as the subtitle
+tagline: "Pentester" # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   in this blog, I will share my cybersecurity knowledge and my own notes and ctf write-ups.
@@ -40,8 +40,7 @@ social:
     # The first element serves as the copyright owner's link
     - https://x.com/1DH4M_Tun # change to your Twitter homepage
     - https://github.com/el-mehdi-dridi # change to your GitHub homepage
-    # Uncomment below to add more social links
-    # - https://www.facebook.com/username
+    - https://www.linkedin.com/in/el-mehdi-dridi/
     # - https://www.linkedin.com/in/username
 
 # Site Verification Settings
@@ -95,10 +94,10 @@ theme_mode: # [light | dark]
 # will be added to all media resources (site avatar, posts' images, audio and video files) paths starting with '/'
 #
 # e.g. 'https://cdn.com'
-cdn: "https://chirpy-img.netlify.app"
+cdn: ""
 
 # the avatar on sidebar, support local or CORS resources
-avatar: "/assets/img/favions/favicon.ico" # string, local or CORS resources
+avatar: "/assets/img/favicons/logo.jpg" # string, local or CORS resources
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
