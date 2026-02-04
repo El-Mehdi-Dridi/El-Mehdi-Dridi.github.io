@@ -1,5 +1,5 @@
 ---
-title: "Godzilla CTF Writeup - Windows Forensics Challenge"
+title: "Godzilla Writeup - Windows Forensics Challenge"
 date: 2026-02-04
 categories: [CTF, Forensics]
 tags: [windows-forensics, sysmon, dll-injection, credential-dumping, chainsaw]
