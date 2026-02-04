@@ -11,11 +11,10 @@ description: "Complete writeup for the Godzilla CTF challenge - A Windows forens
 
 ## Overview
 
-This document details a forensic analysis of a Windows system compromise involving malicious DLL injection and credential theft.
+In this article i will share with you a detailed writeup for godzilla challenge that i blooded it on Spooky CTF organized by Securinets Tek-up
 
-<!-- TODO: Add Godzilla banner image later -->
-<!-- ![Challenge Overview](/assets/img/posts/godzilla/godzilla_banner.png) -->
-<!-- *Caption: Godzilla CTF Challenge - Windows Forensics* -->
+![Godzilla CTF Challenge](/assets/img/posts/godzilla/Screenshot%202026-02-04%20012917.png)
+*Caption: Godzilla CTF Challenge - Windows Forensics*
 
 ---
 
