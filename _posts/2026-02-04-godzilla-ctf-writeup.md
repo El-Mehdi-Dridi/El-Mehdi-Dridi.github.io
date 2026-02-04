@@ -199,6 +199,7 @@ By using impacket-secretsdump, we successfully dumped all the credentials, espec
 │  4. Exfiltration                                            │
 │     └── NTLM hashes extracted for offline cracking          │
 └─────────────────────────────────────────────────────────────┘
+```
 
 
 ---
