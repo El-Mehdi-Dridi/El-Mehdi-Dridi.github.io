@@ -232,7 +232,7 @@ By using impacket-secretsdump, we successfully dumped all the credentials, espec
 
 I hope you enjoyed reading this writeup!
 
-![meme](/assets/img/posts/godzilla/meme.png)
+![meme](/assets/img/posts/godzilla/Screenshot%202026-02-04%20125534.png)
 
 ---
 
