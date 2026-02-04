@@ -188,16 +188,16 @@ By using impacket-secretsdump, we successfully dumped all the credentials, espec
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  1. Initial Access                                          │
-│     └── FileZilla CVE-2023-53959 DLL injection             │
+│     └── FileZilla CVE-2023-53959 DLL injection              │
 ├─────────────────────────────────────────────────────────────┤
 │  2. Execution                                               │
-│     └── Malicious TextShaping.dll loaded by FileZilla      │
+│     └── Malicious TextShaping.dll loaded by FileZilla       │
 ├─────────────────────────────────────────────────────────────┤
 │  3. Credential Access                                       │
-│     └── SAM/SYSTEM hives exported via reg.exe              │
+│     └── SAM/SYSTEM hives exported via reg.exe               │
 ├─────────────────────────────────────────────────────────────┤
 │  4. Exfiltration                                            │
-│     └── NTLM hashes extracted for offline cracking         │
+│     └── NTLM hashes extracted for offline cracking          │
 └─────────────────────────────────────────────────────────────┘
 
 
