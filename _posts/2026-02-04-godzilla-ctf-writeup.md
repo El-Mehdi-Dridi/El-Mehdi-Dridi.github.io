@@ -237,7 +237,4 @@ I hope you enjoyed reading this writeup!
 ---
 
 *Feel free to reach out on [Twitter/X](https://x.com/1DH4M_Tun) if you have any questions!*
-
----
-
-*Feel free to reach out on [Twitter/X](https://x.com/1DH4M_Tun) if you have any questions!*
+*
