@@ -11,10 +11,13 @@ description: "Complete writeup for the Godzilla CTF challenge - A Windows forens
 
 ## Overview
 
-In this article i will share with you a detailed writeup for godzilla challenge that i blooded it on Spooky CTF organized by Securinets Tek-up
+In this article, I will share with you a detailed writeup for the Godzilla challenge that I first-blooded at Spooky CTF, organized by Securinets Tek-up.
 
 ![Godzilla CTF Challenge](/assets/img/posts/godzilla/Screenshot%202026-02-04%20012917.png)
-*Caption: Godzilla CTF Challenge - Windows Forensics*
+
+The authors provided us with a Windows disk image to analyze and answer the questions.
+
+![given File](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004257.png)
 
 ---
 
@@ -24,10 +27,11 @@ In this article i will share with you a detailed writeup for godzilla challenge 
 
 **Answer:** `bou3rada`
 
-**Evidence:** Username found in file paths and PowerShell history logs.
+**Evidence:** Username found in users directory
 
-![Step 1 & 2 - User and Sysmon Discovery](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004257.png)
-*Caption: Finding the machine owner and Sysmon installation*
+![Step 1 & 2 - User and Sysmon Discovery](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004342.png)
+
+
 
 ---
 
@@ -37,9 +41,10 @@ In this article i will share with you a detailed writeup for godzilla challenge 
 
 **Answer:** `Sysmon` (System Monitor)
 
-**Evidence:** 
-- Found executable files: `Sysmon.exe`, `Sysmon64.exe`, `Sysmon64a.exe`
-- Location: `C:\Users\bou3rada\Downloads\Sysmon\`
+Since the user installed a system monitoring tool, I checked the Downloads directory.
+
+![tool](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004450.png)
+
 
 ---
 
@@ -49,12 +54,10 @@ In this article i will share with you a detailed writeup for godzilla challenge 
 
 **Answer:** `sysmonconfig-export.xml`
 
-**Evidence:**
-- Found at: `/Users/bou3rada/Downloads/Sysmon/sysmonconfig-export.xml`
-- Based on SwiftOnSecurity sysmon-config template (version 74 from 2021-07-08)
+To get the config file used by Sysmon, we listed the Sysmon directory. 
 
-![Step 3 - Config File](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004342.png)
-*Caption: Sysmon configuration file identification*
+![Step 3 - Config File](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004523.png)
+
 
 ---
 
@@ -64,14 +67,9 @@ In this article i will share with you a detailed writeup for godzilla challenge 
 
 **Answer:** `.\Sysmon.exe -accepteula -i .\sysmonconfig-export.xml`
 
-**Breakdown:**
-- `.\Sysmon.exe` - Execute Sysmon binary
-- `-accepteula` - Automatically accept end-user license agreement
-- `-i .\sysmonconfig-export.xml` - Install with specified configuration file
+To get the command used, I analyzed the PowerShell history file.
 
-**Source:** PowerShell history file (`ConsoleHost_history.txt`)
-
-![Step 4 - PowerShell History](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004450.png)
+![Step 4 - PowerShell History](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004817.png)
 *Caption: PowerShell history revealing the Sysmon installation command*
 
 ---
@@ -82,13 +80,10 @@ In this article i will share with you a detailed writeup for godzilla challenge 
 
 **Answer:** `FileZilla`
 
-**Evidence:**
-- Executable: `FileZilla_Client_(64bit)_v3.63.1.exe`
-- Version: 3.63.1
-- Vulnerable to CVE-2023-53959
+Also in the same file, we found that the user executed another tool called FileZilla.
 
-![Step 5 - FileZilla](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004523.png)
-*Caption: FileZilla client executable discovered*
+![Step 5 - FileZilla](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004817.png)
+
 
 ---
 
@@ -98,15 +93,10 @@ In this article i will share with you a detailed writeup for godzilla challenge 
 
 **Answer:** `C:\Users\bou3rada\Desktop\healthcheck.ps1`
 
-**Script Purpose:**
-The script performs:
-1. System health checks (disk, memory, services)
-2. Verifies FileZilla components
-3. Downloads malicious DLL from remote server
-4. Extracts file to FileZilla program directory
+
 
 ![Step 6 - Malicious Script](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004817.png)
-*Caption: The healthcheck.ps1 script analysis*
+
 
 ---
 
@@ -116,9 +106,9 @@ The script performs:
 
 **Answer:** `Set-ExecutionPolicy Unrestricted`
 
-**Context:** PowerShell execution policy was blocking script execution. Setting it to "Unrestricted" allows unsigned scripts to run.
+PowerShell execution policy was blocking script execution. Setting it to "Unrestricted" allows unsigned scripts to run.
 
-![Step 7 & 8 - Execution Policy and DLL Download](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004943.png)
+![Step 7 & 8 - Execution Policy and DLL Download](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004817.png)
 *Caption: PowerShell execution policy change and malicious DLL download*
 
 ---
@@ -129,11 +119,9 @@ The script performs:
 
 **Answer:** `http://192.168.136.184:7865/TextShaping.dll`
 
-**Details:**
-- **File:** `TextShaping.dll`
-- **Destination:** `C:\Program Files\FileZilla FTP Client\TextShaping.dll`
-- **Remote Server:** `192.168.136.184:7865`
+By analyzing the PowerShell script, we found the URL in it.
 
+![url](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004943.png)
 ---
 
 ## Step 9: File Creation Detection
@@ -142,56 +130,25 @@ The script performs:
 
 **Answer:** `11`
 
-**Event Details:**
-- **Type:** FileCreate
-- **File:** `C:\Program Files\FileZilla FTP Client\TextShaping.dll`
-- **Process:** `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
-- **Process ID:** 5560
-- **Timestamp:** 2026-01-31 09:13:45.758
+Using Chainsaw, we successfully retrieved the Event ID for the file creation.  
 
 ![Step 9 & 10 - Sysmon Events](/assets/img/posts/godzilla/Screenshot%202026-02-04%20005709.png)
 *Caption: Sysmon Event ID 11 (FileCreate) and Event ID 7 (DLL Loading)*
 
 ---
 
-## Step 10: DLL Injection Detection
 
-**Question:** After filezilla restarted, Sysmon detected the downloaded DLL being loaded, what's the Event ID and Process ID?
 
-**Answer:** `7 - 4556`
+## Step 11 + 12: CVE Identification
 
-**Event Details:**
-- **Event ID:** 7 (Image Load / DLL Loading)
-- **Process ID:** 4556
-- **Process:** `C:\Program Files\FileZilla FTP Client\filezilla.exe`
-- **DLL Loaded:** `C:\Program Files\FileZilla FTP Client\TextShaping.dll`
-- **Signature Status:** Unsigned (malicious)
+**Question:** This manipulation is related to a CVE in the FileZilla program. What is the CVE number? And what version does this CVE affect?
 
----
+**Answer:** `CVE-2023-53959, 3.63.1`
 
-## Step 11: CVE Identification
+I believe in Serio when he says Google is your friend!
 
-**Question:** This manipulation is related to CVE in the filezilla program, what the CVE number?
 
-**Answer:** `CVE-2023-53959`
 
-**Details:**
-- This CVE exploits FileZilla's DLL loading mechanism
-- Allows arbitrary code execution through malicious DLL injection
-- Related to insecure library loading from program directory
-
-![Step 11 - CVE Research](/assets/img/posts/godzilla/Screenshot%202026-02-04%20010245.png)
-*Caption: CVE-2023-53959 - FileZilla DLL Hijacking vulnerability*
-
----
-
-## Step 12: Affected Version
-
-**Question:** What version does this CVE affect?
-
-**Answer:** `3.63.1`
-
-**Evidence:** FileZilla version found in extracted files: `FileZilla_Client_(64bit)_v3.63.1.exe`
 
 ![Step 12 - Version](/assets/img/posts/godzilla/Screenshot%202026-02-04%20010417.png)
 *Caption: Vulnerable FileZilla version identified*
@@ -204,35 +161,10 @@ The script performs:
 
 **Answer:** `"C:\Windows\system32\reg.exe" save HKLM\SAM SAM`
 
-**Complete Dumping Process:**
-
-1. **First Attempt (Failed):**
-   ```
-   "C:\Windows\system32\reg.exe" save HKLM/SAM SAM
-   ```
-   *(Wrong slash - forward slash instead of backslash)*
-
-2. **SAM Hive Dump (Succeeded):**
-   ```
-   "C:\Windows\system32\reg.exe" save HKLM\SAM SAM
-   ```
-   - Exports Security Account Manager database
-   - Contains user account credentials
-
-3. **SYSTEM Hive Dump:**
-   ```
-   "C:\Windows\system32\reg.exe" save HKLM\SYSTEM SYSTEM
-   ```
-   - Exports system registry hive
-   - Contains encryption keys for SAM
-
-**Detection:**
-- Both commands executed from PowerShell
-- Logged in Sysmon (EventID 1 - Process Creation)
-- Timestamps: 2026-01-31 09:14:40 - 09:15:21
+The attacker tried to dump the SAM and SYSTEM files using reg.exe.
 
 ![Step 13 - Credential Dumping](/assets/img/posts/godzilla/Screenshot%202026-02-04%20010652.png)
-*Caption: Registry credential dumping commands captured by Sysmon*
+
 
 ---
 
@@ -240,52 +172,16 @@ The script performs:
 
 **Question:** Since you have the files, get what the attacker wanted to get in the first place
 
-**Answer:** Local account NTLM hashes extracted from SAM + SYSTEM:
+**Answer:** Local account NTLM hashes extracted from SAM + SYSTEM.
 
-```
-Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0
-Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0
-DefaultAccount:503:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0
-WDAGUtilityAccount:504:aad3b435b51404eeaad3b435b51404ee:5714fac757c2839ddfd12fe5a25ee0ad
-bou3rada:1001:aad3b435b51404eeaad3b435b51404ee:605eaba791238371d9e9f314cb5e7472
-```
-
-**Target Account:** `bou3rada`
-- **NTLM Hash:** `605eaba791238371d9e9f314cb5e7472`
-
-**Extraction Method:** `impacket-secretsdump` used with SAM and SYSTEM hives
+By using impacket-secretsdump, we successfully dumped all the credentials, especially the admin NTLM hash. 
 
 ![Step 14 - Hash Extraction](/assets/img/posts/godzilla/Screenshot%202026-02-04%20010836.png)
 *Caption: NTLM hash extraction using impacket-secretsdump*
 
 ---
 
-## Attack Timeline
 
-| Time | Event | Details |
-|------|-------|---------|
-| 08:53:12 | Sysmon Installed | `.\Sysmon.exe -accepteula -i .\sysmonconfig-export.xml` |
-| 09:13:45 | Malicious DLL Created | `TextShaping.dll` downloaded and placed |
-| 09:13:45 | FileZilla Launched | Started with malicious DLL |
-| 09:13:46 | DLL Loaded | FileZilla process (PID 4556) loaded malicious DLL |
-| 09:14:40 | SAM Dump Attempt | First attempt failed (wrong slash) |
-| 09:15:08 | SAM Dumped | Registry hive exported successfully |
-| 09:15:21 | SYSTEM Dumped | Registry hive exported for key extraction |
-
----
-
-## Forensic Tools Used
-
-| Tool | Purpose |
-|------|---------|
-| **Chainsaw** | Log parsing and event analysis |
-| **Python-Evtx** | Windows event log parsing |
-| **Impacket-secretsdump** | Credential extraction from registry hives |
-| **Sysmon** | System activity monitoring and logging |
-
----
-
-## Key Findings
 
 ### Vulnerability Chain
 
@@ -303,25 +199,7 @@ bou3rada:1001:aad3b435b51404eeaad3b435b51404ee:605eaba791238371d9e9f314cb5e7472
 │  4. Exfiltration                                            │
 │     └── NTLM hashes extracted for offline cracking         │
 └─────────────────────────────────────────────────────────────┘
-```
 
-### Security Implications
-
-- Outdated software (FileZilla 3.63.1) allowed DLL injection
-- Registry hives were accessible to compromised user account
-- No additional authentication required for credential dumping
-- Sysmon captured all malicious activity despite attacker's presence
-
----
-
-## Recommendations
-
-1. ✅ Update FileZilla to patched version (post-CVE-2023-53959)
-2. ✅ Implement DLL Search Order Hijacking protections
-3. ✅ Restrict registry hive access permissions
-4. ✅ Monitor for suspicious `reg.exe` and `rundll32.exe` activity
-5. ✅ Use credential guard and LSA protection on Windows
-6. ✅ Implement application whitelisting policies
 
 ---
 
@@ -338,11 +216,10 @@ bou3rada:1001:aad3b435b51404eeaad3b435b51404ee:605eaba791238371d9e9f314cb5e7472
 | Q7 - Execution Policy | `Set-ExecutionPolicy Unrestricted` |
 | Q8 - Download URL | `http://192.168.136.184:7865/TextShaping.dll` |
 | Q9 - File Creation Event | `11` |
-| Q10 - DLL Load Event & PID | `7 - 4556` |
-| Q11 - CVE Number | `CVE-2023-53959` |
-| Q12 - Affected Version | `3.63.1` |
-| Q13 - Dump Command | `"C:\Windows\system32\reg.exe" save HKLM\SAM SAM` |
-| Q14 - NTLM Hash | `605eaba791238371d9e9f314cb5e7472` |
+| Q10 - CVE Number | `CVE-2023-53959` |
+| Q11 - Affected Version | `3.63.1` |
+| Q12 - Dump Command | `"C:\Windows\system32\reg.exe" save HKLM\SAM SAM` |
+| Q13 - NTLM Hash | `31d6cfe0d16ae931b73c59d7e0c089c0` |
 
 ---
 
