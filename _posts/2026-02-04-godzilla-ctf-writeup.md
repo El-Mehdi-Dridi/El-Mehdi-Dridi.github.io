@@ -70,7 +70,7 @@ To get the config file used by Sysmon, we listed the Sysmon directory.
 To get the command used, I analyzed the PowerShell history file.
 
 ![Step 4 - PowerShell History](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004817.png)
-*Caption: PowerShell history revealing the Sysmon installation command*
+
 
 ---
 
@@ -109,7 +109,7 @@ Also in the same file, we found that the user executed another tool called FileZ
 PowerShell execution policy was blocking script execution. Setting it to "Unrestricted" allows unsigned scripts to run.
 
 ![Step 7 & 8 - Execution Policy and DLL Download](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004817.png)
-*Caption: PowerShell execution policy change and malicious DLL download*
+
 
 ---
 
@@ -133,7 +133,7 @@ By analyzing the PowerShell script, we found the URL in it.
 Using Chainsaw, we successfully retrieved the Event ID for the file creation.  
 
 ![Step 9 & 10 - Sysmon Events](/assets/img/posts/godzilla/Screenshot%202026-02-04%20005709.png)
-*Caption: Sysmon Event ID 11 (FileCreate) and Event ID 7 (DLL Loading)*
+
 
 ---
 
@@ -151,7 +151,7 @@ I believe in Serio when he says Google is your friend!
 
 
 ![Step 12 - Version](/assets/img/posts/godzilla/Screenshot%202026-02-04%20010417.png)
-*Caption: Vulnerable FileZilla version identified*
+
 
 ---
 
@@ -177,7 +177,7 @@ The attacker tried to dump the SAM and SYSTEM files using reg.exe.
 By using impacket-secretsdump, we successfully dumped all the credentials, especially the admin NTLM hash. 
 
 ![Step 14 - Hash Extraction](/assets/img/posts/godzilla/Screenshot%202026-02-04%20010836.png)
-*Caption: NTLM hash extraction using impacket-secretsdump*
+
 
 ---
 
@@ -227,6 +227,16 @@ By using impacket-secretsdump, we successfully dumped all the credentials, espec
 **Report Generated:** February 4, 2026  
 **Author:** El Mehdi Dridi  
 **Challenge:** Godzilla - Windows Forensics CTF
+
+---
+
+I hope you enjoyed reading this writeup!
+
+![meme](/assets/img/posts/godzilla/meme.png)
+
+---
+
+*Feel free to reach out on [Twitter/X](https://x.com/1DH4M_Tun) if you have any questions!*
 
 ---
 
