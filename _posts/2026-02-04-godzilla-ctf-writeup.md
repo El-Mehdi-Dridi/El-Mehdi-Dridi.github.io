@@ -27,7 +27,7 @@ The authors provided us with a Windows disk image to analyze and answer the ques
 
 **Answer:** `bou3rada`
 
-**Evidence:** Username found in users directory
+I Username found in users directory
 
 ![Step 1 & 2 - User and Sysmon Discovery](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004342.png)
 
