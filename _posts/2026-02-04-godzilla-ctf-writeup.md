@@ -15,13 +15,23 @@ In this article, I will share with you a detailed writeup for the Godzilla chall
 
 ![Godzilla CTF Challenge](/assets/img/posts/godzilla/Screenshot%202026-02-04%20012917.png)
 
+---
+
+## Given Data
+
 The authors provided us with a Windows disk image to analyze and answer the questions.
 
 ![given File](/assets/img/posts/godzilla/Screenshot%202026-02-04%20004257.png)
 
+**What we received:**
+- A Windows disk image containing user files, logs, and system artifacts
+- A set of forensic questions to answer
+
 ---
 
-## Step 1: Identify Machine Owner
+## Analysis
+
+### Step 1: Identify Machine Owner
 
 **Question:** What's the username of the machine's owner?
 
