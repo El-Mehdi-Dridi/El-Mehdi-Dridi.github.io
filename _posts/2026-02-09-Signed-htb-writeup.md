@@ -2,7 +2,7 @@
 
 Signed is a medium-difficulty Active Directory box created by kavigihan. It involves an MSSQL attack vector and SMB to WinRM attack relay. It contains 2 approaches: one intended and one unintended. This time we were provided with initial credentials `scott:Sm230#C5NatH`
 
-![Signed writeup](/assets/img/posts/signed/Screenshot%202026-02-09%20194804.png)
+![Signed writeup pic](/assets/img/posts/signed/Screenshot%202026-02-09%20194804.png)
 
 
 The user scott has access to the MSSQL server
