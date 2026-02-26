@@ -1,17 +1,17 @@
 ---
-title: "Intigriti February Challenge 0226 Writeup - Stored XSS via JSONP Callback Injection"
+title: "Intigriti February Challenge Writeup"
 date: 2026-02-26
 categories: [CTF, Web Security]
 tags: [xss, stored-xss, jsonp, cookie-stealing, intigriti]
 author: el_mehdi_dridi
-description: "Complete writeup for the Intigriti February 2026 Challenge - Exploiting a Stored XSS vulnerability by chaining weak JSONP callback filtering with unsafe dynamic script loading."
+description: "Complete writeup for the Intigriti February 2026 Challenge - Exploiting DOM - XSS on JSONP callback"
 ---
 
 # Intigriti February Challenge 0226 Writeup
 
 ## Overview
 
-This challenge involves exploiting a **Stored XSS vulnerability** that chains two weaknesses: insufficient input sanitization in the JSONP endpoint and unsafe dynamic script loading in the client-side JavaScript. By combining these flaws, we can steal the admin bot's cookies and capture the flag.
+This challenge involves exploiting a **DOM - XSS on JSONP callback** that chains two weaknesses: insufficient input sanitization in the JSONP endpoint and unsafe dynamic script loading in the client-side JavaScript. By combining these flaws, we can steal the admin bot's cookies and capture the flag.
 
 ![writeup pic](/assets/img/posts/integriti_febr/meme.png)
 
