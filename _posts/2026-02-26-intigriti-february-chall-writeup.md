@@ -11,7 +11,7 @@ description: "Complete writeup for the Intigriti February 2026 Challenge - Explo
 
 ## Overview
 
-This challenge involves exploiting a **DOM - XSS on JSONP callback** that chains two weaknesses: insufficient input sanitization in the JSONP endpoint and unsafe dynamic script loading in the client-side JavaScript. By combining these flaws, we can steal the admin bot's cookies and capture the flag.
+This challenge involves exploiting a **DOM based XSS on JSONP callback** that chains two weaknesses: insufficient input sanitization in the JSONP endpoint and unsafe dynamic script loading in the client-side JavaScript. By combining these flaws, we can steal the admin bot's cookies and capture the flag.
 
 ![writeup pic](/assets/img/posts/integriti_febr/meme.png)
 
