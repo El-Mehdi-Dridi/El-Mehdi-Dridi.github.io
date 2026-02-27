@@ -4,7 +4,7 @@ date: 2026-02-27
 categories: [CTF, Web Security]
 tags: [xss, stored-xss, jsonp, cookie-stealing, intigriti]
 author: el_mehdi_dridi
-description: "Complete writeup for the Intigriti February 2026 Challenge - Exploiting DOM - XSS on JSONP callback"
+description: "Complete writeup for the Intigriti February 2026 Challenge - Exploiting DOM - XSS on JSONP callback "
 ---
 
 # Intigriti February Challenge 0226 Writeup
