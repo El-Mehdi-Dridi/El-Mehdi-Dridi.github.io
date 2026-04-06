@@ -30,20 +30,49 @@ DarkZero is a **hard** difficulty Windows Active Directory machine on HackTheBox
 ### Nmap Scan
 
 ```bash
-nmap -p- --min-rate 10000 10.10.11.89
-```
+sudo nmap -vvv -T4 10.10.11.89
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2026-04-06 16:13 CET
+Initiating Ping Scan at 16:13
+Scanning 10.10.11.89 [4 ports]
+Completed Ping Scan at 16:13, 0.29s elapsed (1 total hosts)
+Initiating SYN Stealth Scan at 16:13
+Scanning dc01.darkzero.htb (10.10.11.89) [1000 ports]
+Discovered open port 135/tcp on 10.10.11.89
+Discovered open port 139/tcp on 10.10.11.89
+Discovered open port 53/tcp on 10.10.11.89
+Discovered open port 445/tcp on 10.10.11.89
+Discovered open port 88/tcp on 10.10.11.89
+Discovered open port 1433/tcp on 10.10.11.89
+Discovered open port 3268/tcp on 10.10.11.89
+Discovered open port 389/tcp on 10.10.11.89
+Discovered open port 593/tcp on 10.10.11.89
+Discovered open port 464/tcp on 10.10.11.89
+Discovered open port 3269/tcp on 10.10.11.89
+Discovered open port 2179/tcp on 10.10.11.89
+Discovered open port 636/tcp on 10.10.11.89
+Completed SYN Stealth Scan at 16:13, 4.93s elapsed (1000 total ports)
+Nmap scan report for dc01.darkzero.htb (10.10.11.89)
+Host is up, received echo-reply ttl 127 (0.045s latency).
+Scanned at 2026-04-06 16:13:32 CET for 5s
+Not shown: 987 filtered tcp ports (no-response)
+PORT     STATE SERVICE          REASON
+53/tcp   open  domain           syn-ack ttl 127
+88/tcp   open  kerberos-sec     syn-ack ttl 127
+135/tcp  open  msrpc            syn-ack ttl 127
+139/tcp  open  netbios-ssn      syn-ack ttl 127
+389/tcp  open  ldap             syn-ack ttl 127
+445/tcp  open  microsoft-ds     syn-ack ttl 127
+464/tcp  open  kpasswd5         syn-ack ttl 127
+593/tcp  open  http-rpc-epmap   syn-ack ttl 127
+636/tcp  open  ldapssl          syn-ack ttl 127
+1433/tcp open  ms-sql-s         syn-ack ttl 127
+2179/tcp open  vmrdp            syn-ack ttl 127
+3268/tcp open  globalcatLDAP    syn-ack ttl 127
+3269/tcp open  globalcatLDAPssl syn-ack ttl 127
 
-Open ports reveal a typical domain controller profile — DNS (53), Kerberos (88), LDAP (389/636), SMB (445), WinRM (5985), and notably **MSSQL on 1433**.
-
-```
-53/tcp    open  domain
-88/tcp    open  kerberos-sec
-135/tcp   open  msrpc
-139/tcp   open  netbios-ssn
-389/tcp   open  ldap          (Domain: darkzero.htb, Host: DC01)
-445/tcp   open  microsoft-ds
-1433/tcp  open  ms-sql-s      Microsoft SQL Server 2022
-5985/tcp  open  wsman
+Read data files from: /usr/bin/../share/nmap
+Nmap done: 1 IP address (1 host up) scanned in 5.27 seconds
+           Raw packets sent: 1992 (87.624KB) | Rcvd: 15 (644B)
 ```
 
 Adding to `/etc/hosts`:
@@ -57,17 +86,14 @@ Adding to `/etc/hosts`:
 HackTheBox provides initial credentials for this assume-breach scenario:
 
 ```bash
-netexec smb DC01.darkzero.htb -u john.w -p 'RFulUtONCOL!'
-# [+] darkzero.htb\john.w:RFulUtONCOL!
 
-netexec mssql DC01.darkzero.htb -u john.w -p 'RFulUtONCOL!'
-# [+] darkzero.htb\john.w:RFulUtONCOL!
+nxc mssql dc01.darkzero.htb -u john.w -p 'RFulUtONCOL!'
+MSSQL       10.10.11.89    1433   DC01             [*] Windows 11 / Server 2025 Build 26100 (name:DC01) (domain:darkzero.htb) (EncryptionReq:False)
+MSSQL       10.10.11.89    1433   DC01             [+] darkzero.htb\john.w:RFulUtONCOL! 
 
-netexec winrm DC01.darkzero.htb -u john.w -p 'RFulUtONCOL!'
-# [-] darkzero.htb\john.w:RFulUtONCOL!  (no WinRM)
 ```
 
-`john.w` authenticates to MSSQL and SMB but not WinRM. MSSQL is the priority.
+`john.w` authenticates to MSSQL . MSSQL is the priority.
 
 ---
 
@@ -194,8 +220,16 @@ We now have a routed tunnel to `172.16.20.0/24`.
 As `svc_sql`, our shell is running without `SeImpersonatePrivilege` — the token is restricted:
 
 ```powershell
-PS C:\users\svc_sql> whoami /priv
-# SeImpersonatePrivilege is NOT listed
+PS C:\> whoami /priv
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                    State
+============================= ============================== ========
+SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
+SeCreateGlobalPrivilege       Create global objects          Enabled
+SeIncreaseWorkingSetPrivilege Increase a process working set Disabled
 ```
 
 The intended path is to restore the service privilege through ADCS certificate enrollment.
